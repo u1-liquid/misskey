@@ -284,13 +284,14 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async getUserPolicies(userId: MiUser['id'] | null): Promise<RolePolicies> {
+	public async getUserPolicies(userId: MiUser['id'] | null): Promise<RolePolicies & { [kind: string]: string | number | boolean }> {
 		const meta = await this.metaService.fetch();
 		const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
 
 		if (userId == null) return basePolicies;
 
 		const roles = await this.getUserRoles(userId);
+		const inlinePolicies = await this.usersRepository.findOneBy({ id: userId }).then(u => u?.inlinePolicies ?? []);
 
 		function calc<T extends keyof RolePolicies>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
 			if (roles.length === 0) return basePolicies[name];
@@ -306,7 +307,7 @@ export class RoleService implements OnApplicationShutdown {
 			return aggregate(policies.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 		}
 
-		return {
+		const policy: RolePolicies & { [kind: string]: string | number | boolean } = {
 			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
 			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
@@ -334,6 +335,31 @@ export class RoleService implements OnApplicationShutdown {
 			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 		};
+
+		const now = Date.now();
+		for (const inlinePolicy of inlinePolicies) {
+			if (inlinePolicy.expiresAt && (inlinePolicy.expiresAt.getTime() < now)) continue;
+
+			switch (inlinePolicy.type) {
+				case 'override':
+					policy[inlinePolicy.kind] = inlinePolicy.value;
+					break;
+				case 'add':
+					policy[inlinePolicy.kind] = (policy[inlinePolicy.kind] as number) + inlinePolicy.value;
+					break;
+				case 'multiply':
+					policy[inlinePolicy.kind] = (policy[inlinePolicy.kind] as number) * inlinePolicy.value;
+					break;
+				case 'grant':
+					policy[`${inlinePolicy.scope}:${inlinePolicy.target}`] = true;
+					break;
+				case 'revoke':
+					policy[`${inlinePolicy.scope}:${inlinePolicy.target}`] = false;
+					break;
+			}
+		}
+
+		return policy;
 	}
 
 	@bindThis

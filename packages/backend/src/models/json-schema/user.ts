@@ -358,6 +358,127 @@ export const packedUserDetailedNotMeOnlySchema = {
 				},
 			},
 		},
+		inlinePolicies: {
+			type: 'array',
+			nullable: false, optional: false,
+			items: {
+				type: 'object',
+				oneOf: [
+					{
+						type: 'object',
+						nullable: false, optional: false,
+						properties: {
+							type: {
+								type: 'string',
+								nullable: false, optional: false,
+								enum: ['override'],
+							},
+							kind: {
+								type: 'string',
+								nullable: false, optional: false,
+							},
+							value: {
+								type: 'object',
+								oneOf: [
+									{
+										type: 'boolean',
+										nullable: false, optional: false,
+									},
+									{
+										type: 'number',
+										nullable: false, optional: false,
+									},
+									{
+										type: 'string',
+										nullable: false, optional: false,
+									},
+								],
+							},
+							reason: {
+								type: 'string',
+								nullable: true, optional: true,
+							},
+							createdAt: {
+								type: 'string',
+								nullable: true, optional: true,
+								format: 'date-time',
+							},
+							expiresAt: {
+								type: 'string',
+								nullable: true, optional: true,
+								format: 'date-time',
+							},
+						},
+					},
+					{
+						type: 'object',
+						nullable: false, optional: false,
+						properties: {
+							type: {
+								type: 'string',
+								nullable: false, optional: false,
+								enum: ['add', 'multiply'],
+							},
+							kind: {
+								type: 'string',
+								nullable: false, optional: false,
+							},
+							value: {
+								type: 'number',
+								nullable: false, optional: false,
+							},
+							reason: {
+								type: 'string',
+								nullable: true, optional: true,
+							},
+							createdAt: {
+								type: 'string',
+								nullable: true, optional: true,
+								format: 'date-time',
+							},
+							expiresAt: {
+								type: 'string',
+								nullable: true, optional: true,
+								format: 'date-time',
+							},
+						},
+					},
+					{
+						type: 'object',
+						nullable: false, optional: false,
+						properties: {
+							type: {
+								type: 'string',
+								nullable: false, optional: false,
+								enum: ['grant', 'revoke'],
+							},
+							scope: {
+								type: 'string',
+								nullable: false, optional: false,
+							},
+							target: {
+								type: 'string',
+								nullable: false, optional: false,
+							},
+							reason: {
+								type: 'string',
+								nullable: true, optional: true,
+							},
+							createdAt: {
+								type: 'string',
+								nullable: true, optional: true,
+								format: 'date-time',
+							},
+							expiresAt: {
+								type: 'string',
+								nullable: true, optional: true,
+								format: 'date-time',
+							},
+						},
+					},
+				],
+			},
+		},
 		memo: {
 			type: 'string',
 			nullable: true, optional: false,
@@ -671,6 +792,25 @@ export const packedMeDetailedOnlySchema = {
 				rateLimitFactor: {
 					type: 'number',
 					nullable: false, optional: false,
+				},
+			},
+			patternProperties: {
+				'^': {
+					type: 'object',
+					oneOf: [
+						{
+							type: 'string',
+							nullable: false, optional: false,
+						},
+						{
+							type: 'number',
+							nullable: false, optional: false,
+						},
+						{
+							type: 'boolean',
+							nullable: false, optional: false,
+						},
+					],
 				},
 			},
 		},

@@ -433,6 +433,7 @@ export class UserEntityService implements OnModuleInit {
 					isAdministrator: role.isAdministrator,
 					displayOrder: role.displayOrder,
 				}))),
+				inlinePolicies: user.inlinePolicies,
 				memo: meId == null ? null : await this.userMemosRepository.findOneBy({
 					userId: meId,
 					targetUserId: user.id,

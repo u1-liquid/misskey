@@ -6,6 +6,7 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { id } from './util/id.js';
 import { MiDriveFile } from './DriveFile.js';
+import { MiInlinePolicy } from './InlinePolicy.js';
 
 @Entity('user')
 @Index(['usernameLower', 'host'], { unique: true })
@@ -258,6 +259,12 @@ export class MiUser {
 		comment: 'The native access token of the User. It will be null if the origin of the user is local.',
 	})
 	public token: string | null;
+
+	@Column('jsonb', {
+		default: [],
+		comment: 'The inlined policies of the User.',
+	})
+	public inlinePolicies: MiInlinePolicy[];
 
 	constructor(data: Partial<MiUser>) {
 		if (data == null) return;
