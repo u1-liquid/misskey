@@ -40,7 +40,7 @@ export function maybeMakeRelative(urlStr: string, baseStr: string): string {
 			return urlObj.pathname + urlObj.search + urlObj.hash;
 		}
 		return urlStr;
-	} catch (e) {
+	} catch {
 		return '';
 	}
 }
