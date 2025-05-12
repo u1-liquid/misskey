@@ -3,10 +3,14 @@ name: Publish Docker image (io)
 on:
   push:
     branches:
-      - main
+      - io
     tags:
       - '**-io.*'
   workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   push_to_registry:
@@ -50,5 +54,5 @@ jobs:
           cache-from: type=registry,ref=ghcr.io/misskeyio/misskey:io-buildcache
           cache-to: type=registry,ref=ghcr.io/misskeyio/misskey:io-buildcache,mode=max
           tags: |
-            ghcr.io/misskeyio/misskey:latest
+            ghcr.io/misskeyio/misskey:io
             ghcr.io/misskeyio/misskey:${{ env.FORMATTED_BRANCH_NAME }}

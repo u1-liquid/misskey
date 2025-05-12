@@ -5,12 +5,16 @@ on:
     branches:
       - main
       - beta
+      - io
       - host
     paths:
       - packages/backend/**
   pull_request:
     paths:
       - packages/backend/**
+
+permissions:
+  contents: read
 
 jobs:
   validate-api-json:

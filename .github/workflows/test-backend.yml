@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - beta
+      - io
       - host
     paths:
       - packages/backend/**
@@ -15,6 +16,9 @@ on:
       - packages/backend/**
       # for permissions
       - packages/misskey-js/**
+
+permissions:
+  contents: read
 
 jobs:
   unit:

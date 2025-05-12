@@ -5,8 +5,13 @@ on:
     branches:
       - main
       - beta
+      - io
       - host
   pull_request:
+
+permissions:
+  contents: read
+  packages: read
 
 jobs:
   dockle:

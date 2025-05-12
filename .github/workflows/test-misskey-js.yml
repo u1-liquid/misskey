@@ -8,12 +8,16 @@ on:
     branches:
       - main
       - beta
+      - io
       - host
     paths:
       - packages/misskey-js/**
   pull_request:
     paths:
       - packages/misskey-js/**
+
+permissions:
+  contents: read
 
 jobs:
   test:
