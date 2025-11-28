@@ -40,7 +40,7 @@
 	"dependencies": {
 		"esbuild": "managed",
 		"eventemitter3": "5.0.1",
-		"glob": "11.0.2",
+		"glob": "11.1.0",
 		"matter-js": "0.20.0",
 		"seedrandom": "3.0.5"
 	}
